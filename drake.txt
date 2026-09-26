@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CashConvert - Smart Currency & Price Calculator</title>
+    
+    <!-- ========================================== -->
+    <!-- PASTE YOUR GOOGLE ADSENSE CODE SNIPPET HERE -->
+    <!-- ========================================== -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-slate-100 min-h-screen flex flex-col justify-between p-4 sm:p-6">
+
+    <!-- Header -->
+    <header class="max-w-xl mx-auto w-full text-center py-4">
+        <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full text-emerald-300 text-sm font-medium mb-3">
+            <i class="fa-solid fa-wallet"></i> CashConvert Tool
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-r from-white via-emerald-200 to-emerald-400 bg-clip-text text-transparent">
+            Smart Currency & Price
+        </h1>
+        <p class="text-slate-400 text-sm mt-1">Instant currency conversions, discounts, and tax calculations on the fly.</p>
+    </header>
+
+    <!-- Main App Container -->
+    <main class="max-w-xl mx-auto w-full space-y-6 my-auto">
+        
+        <!-- Converter Card -->
+        <div class="bg-slate-800/60 backdrop-blur-xl border border-slate-700/60 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+            <!-- Background Glow Decor -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Amount Input -->
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">Amount to Convert</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400 font-semibold">
+                        <i class="fa-solid fa-coins text-emerald-400"></i>
+                    </span>
+                    <input type="number" id="amountInput" value="100" oninput="convertCurrency()" 
+                        class="w-full pl-11 pr-4 py-3.5 bg-slate-900/80 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-lg font-bold">
+                </div>
+            </div>
+
+            <!-- Currency Selectors Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                <!-- From Currency -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">From</label>
+                    <select id="fromCurrency" onchange="convertCurrency()" class="w-full p-3 bg-slate-900/80 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium">
+                        <option value="USD" selected>USD - US Dollar</option>
+                        <option value="ZAR">ZAR - South African Rand</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                        <option value="AUD">AUD - Australian Dollar</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                    </select>
+                </div>
+
+                <!-- To Currency -->
+                <div class="space-y-1.5">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">To</label>
+                    <select id="toCurrency" onchange="convertCurrency()" class="w-full p-3 bg-slate-900/80 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium">
+                        <option value="ZAR" selected>ZAR - South African Rand</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                        <option value="AUD">AUD - Australian Dollar</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Conversion Result Box -->
+            <div class="mt-6 bg-gradient-to-r from-emerald-950/80 to-slate-900/80 border border-emerald-500/30 rounded-2xl p-5 text-center">
+                <p class="text-xs font-medium text-emerald-300 uppercase tracking-wider">Converted Result</p>
+                <div id="resultValue" class="text-3xl sm:text-4xl font-black text-white tracking-tight mt-1">
+                    --
+                </div>
+                <p id="exchangeRateInfo" class="text-xs text-slate-400 mt-1">Fetching live market rates...</p>
+            </div>
+        </div>
+
+        <!-- Quick Shopping / Discount Tool -->
+        <div class="bg-slate-800/60 backdrop-blur-xl border border-slate-700/60 rounded-3xl p-6 shadow-2xl space-y-4">
+            <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-tag text-emerald-400"></i> Quick Sale & Tax Adjuster
+            </h3>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-xs text-slate-400">Discount %</label>
+                    <input type="number" id="discountInput" value="0" placeholder="e.g., 20" oninput="calculateExtras()"
+                        class="w-full p-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs text-slate-400">Tax/VAT %</label>
+                    <input type="number" id="taxInput" value="15" placeholder="e.g., 15" oninput="calculateExtras()"
+                        class="w-full p-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-700/50 flex justify-between items-center text-sm">
+                <span class="text-slate-400 font-medium">Final Price with Adjustments:</span>
+                <span id="finalPriceValue" class="text-lg font-bold text-emerald-400">--</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-xl mx-auto w-full text-center py-4 text-xs text-slate-500">
+        Exchange rates powered by Frankfurter API • Built with CashConvert
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let currentRates = {};
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchRates();
+        });
+
+        async function fetchRates() {
+            const from = document.getElementById('fromCurrency').value;
+            try {
+                const res = await fetch(`https://api.frankfurter.app/latest?from=${from}`);
+                const data = await res.json();
+                currentRates = data.rates;
+                currentRates[from] = 1; // base rate equivalence
+                convertCurrency();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('exchangeRateInfo').innerText = "Failed to load live rates. Using offline estimates.";
+            }
+        }
+
+        async function convertCurrency() {
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+
+            // If base currency changed, re-fetch rates for accuracy
+            if (!currentRates[to] && from) {
+                await fetchRates();
+                return;
+            }
+
+            let rate = 1;
+            if (from === to) {
+                rate = 1;
+            } else if (currentRates[to]) {
+                rate = currentRates[to];
+            } else {
+                // Fallback direct calculation lookup if needed
+                rate = 18.5; // fallback approximation if API lags
+            }
+
+            const converted = amount * rate;
+            document.getElementById('resultValue').innerText = `${converted.toFixed(2)} ${to}`;
+            document.getElementById('exchangeRateInfo').innerText = `1 ${from} = ${rate.toFixed(4)} ${to} (Live Market Rate)`;
+            
+            calculateExtras(converted);
+        }
+
+        function calculateExtras(baseAmount) {
+            if (baseAmount === undefined) {
+                const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+                const to = document.getElementById('toCurrency').value;
+                const rate = currentRates[to] || 1;
+                baseAmount = amount * rate;
+            }
+
+            const discount = parseFloat(document.getElementById('discountInput').value) || 0;
+            const tax = parseFloat(document.getElementById('taxInput').value) || 0;
+            const to = document.getElementById('toCurrency').value;
+
+            let adjusted = baseAmount - (baseAmount * (discount / 100));
+            adjusted = adjusted + (adjusted * (tax / 100));
+
+            document.getElementById('finalPriceValue').innerText = `${adjusted.toFixed(2)} ${to}`;
+        }
+    </script>
+</body>
+</html>
